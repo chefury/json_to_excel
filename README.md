@@ -1,12 +1,15 @@
 
 ## use requirements 
 
+```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-
+```
 
 ## new project without requirements 
+
+```bash
    mkdir python
    cd python
    mkdir json_to_excel
@@ -14,6 +17,7 @@ pip install -r requirements.txt
    python3 -m venv venv
    source venv/bin/activate
    pip install pandas openpyxl\n
+```
 
 ## 开发
 
@@ -26,7 +30,7 @@ npm install --registry=https://registry.npmmirror.com
 
 # 启动服务
 npm run dev
-```
+
 
 浏览器访问 http://localhost:80
 
