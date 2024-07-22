@@ -30,7 +30,7 @@ npm install --registry=https://registry.npmmirror.com
 
 # 启动服务
 npm run dev
-
+```
 
 浏览器访问 http://localhost:80
 
