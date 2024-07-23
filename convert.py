@@ -1,45 +1,47 @@
 import pandas as pd
 import json
+import os
+import requests
+import time
 
-# JSON数据
-data1 = [
-    {
-        "uId": 6128105,
-        "rId": 2004788,
-        "un": "管理员",
-        "pn": "13581757554",
-        "rn": "工作通管理员",
-        "rl": 2,
-        "on": "云狐时代",
-        "oc": "5736403-5773337",
-        "ol": 2,
-        "oId": 5773337,
-        "op": "总部-云狐时代",
-        "photo": "",
-        "mailAddr": ""
-    },
-    {
-        "uId": 6130511,
-        "rId": 2004788,
-        "un": "18518500000",
-        "pn": "18518500000",
-        "rn": "工作通管理员",
-        "rl": 2,
-        "on": "云狐时代",
-        "oc": "5736403-5773337",
-        "ol": 2,
-        "oId": 5773337,
-        "op": "总部-云狐时代",
-        "photo": "",
-        "mailAddr": ""
-    }
-]
-
-
+# 创建asset文件夹，如果不存在
+if not os.path.exists('asset'):
+    os.makedirs('asset')
 
 # 读取JSON文件
-with open('data2.json', 'r', encoding='utf-8') as file:
+with open('data.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
+
+# 下载图片
+base_url = "http://xhimage.gcgcloud.com/10358/upload/"
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+}
+
+for item in data:
+    if 'headImg' in item and item['headImg']:
+        img_url = item['headImg']
+        img_name = img_url.replace(base_url, "")
+        img_path = os.path.join('asset', img_name)
+        
+        # 创建文件的所有父目录
+        os.makedirs(os.path.dirname(img_path), exist_ok=True)
+        
+        # 下载图片并保存
+        try:
+            response = requests.get(img_url, headers=headers)
+            if response.status_code == 404:
+                print(f"图片未找到: {img_url}")
+                continue
+            response.raise_for_status()  # 检查请求是否成功
+            with open(img_path, 'wb') as img_file:
+                img_file.write(response.content)
+            print(f"图片已下载并保存为: {img_path}")
+        except requests.HTTPError as e:
+            print(f"无法下载图片: {img_url}, 错误: {e}")
+        
+        # 增加请求间隔，避免频繁请求
+        time.sleep(1)
 
 # 将JSON数据转换为DataFrame
 df = pd.DataFrame(data)
